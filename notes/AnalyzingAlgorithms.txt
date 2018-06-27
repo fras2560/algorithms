@@ -1,0 +1,11 @@
+Analysis of Algorithsm
+------------------------
+Experiment -> reproducible
+Hypotheses -> falsifiable
+---------------------------
+Observations
+3-Sum: Given N distinct integers, how many triples sum to exactly zero?
+
+brute-force -> a triple for loop O(N^3)
+---------------------------
+https://bracketchallenge.fifa.com/bracket/leaguejoin/0daa6576

@@ -1,0 +1,82 @@
+Dynamic Connectivity
+------------------------------Steps:
+	1. Model the problem
+	2. Find an algo to solve it
+	3. Fast Enough? Memory?
+	4. If not, figure out why
+	5. Find a way to address the problem
+	6. Iterate until satisfied
+------------------------------
+Set of N objects
+	- a connection between two objects
+	- Is there a path connected the two objects
+
+Connection Properties
+	a. Reflexive p is connect to p
+	b. Symmetric if p is connected to q then q is connected to p
+	c. TransitiveL if p -> q and q -> r then p -> r
+	d. Connected components: maximal set of objects that are mutually connected
+
+Operations
+	1. Find query -> check if two objects are in the same component
+	2. Union command -> replace components containing two objects with their union
+-----------------------------
+Quick-Find
+	data structure integer array id[] of size N
+	if i and j have the same id they are connected
+	+ allows a quick find  operation
+	- slows down union
+	must change all q and matches to same as p
+	-quadratic because of union algo so need to make it log N
+------------------------------
+Quick Union(lazy approach)
+	data structure integer
+	array id[] of Size N
+	entry id[i] is the root of the its parent
+	Union change parent root of q roots to point to p
+	Find have to search through tree
+
+	root method (int i)
+		while i != id[i]:
+			i = id[i]
+		return i
+
+	connected (int i, int q)
+		return root(p) == root(q)
+
+	union (int p, int q)
+		int i = root(p)
+		int j = root(q)
+		id[i] = j
+
+	Trees can get tall and expensive to find the root
+------------------------------
+IMPROVEMENTS
+Weighting
+	- want to avoid tall trees
+	- make the smaller tree change roots
+	- have some guarantee that depth if lg N
+	// add a sz[] array keep track of the size
+	union (int p, int q)
+		int i = root(p)
+		int j = root(q)
+		if (i == j) return
+		if (sz[i] < sz[j]){
+			id[i] = j;
+			sz[j] += sz[i];
+		}else{
+			id[j] = i;
+			id[i] += sz[j]
+		}
+
+Path Compression
+		root method (int i)
+		while i != id[i]:
+			id[i] = id[id[i]]
+			i = id[i]
+		return i
+
+No linear algorithm but
+Weight Quick Union with Path Compression is close in practice
+-----------------------------
+Union-Find Applications
