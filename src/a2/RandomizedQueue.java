@@ -1,0 +1,132 @@
+package a2;
+
+import java.util.Iterator;
+import edu.princeton.cs.algs4.StdRandom;
+
+public class RandomizedQueue<Item> implements Iterable<Item> {
+    private int size;
+    private int last;
+    private Item items[];
+    private final static int INIT_SIZE = 4;
+    @SuppressWarnings("unchecked")
+    public RandomizedQueue() {
+        // construct an empty randomized queue
+        this.last = 0;
+        this.size = 0;
+        this.items = (Item[]) new Object[INIT_SIZE];
+    }
+
+    public boolean isEmpty() {
+        // is the randomized queue empty?
+        return this.size == 0;
+    }
+
+    public int size() {
+        // return the number of items on the randomized queue
+        return this.size;
+    }
+
+    public void enqueue(Item item) {
+        // add the item
+        if (item == null) {
+            throw new IllegalArgumentException();
+        }
+        if (this.last == this.items.length) {
+            // double the size of the array
+            this.resize(this.items.length * 2);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void resize(int capacity) {
+        Item[] copy = (Item[]) new Object[capacity];
+        int pos = 0;
+        int copy_pos = 0;
+        while (pos < this.size) {
+            if(this.items[pos] != null) {
+                copy[copy_pos] = this.items[pos];
+                copy_pos++;
+            }
+            pos++;
+        }
+        this.items = copy;
+        this.last = copy_pos;
+    }
+
+    public Item dequeue() {
+        // remove and return a random item
+        // get the position of a random element
+        int pos = StdRandom.uniform(0, this.last);
+        while(this.items[pos] == null) {
+            // goes to 0 if get to end
+            pos = (pos + 1) % this.size;
+        }
+        // remove the item
+        Item item = this.items[pos];
+        this.items[pos] = null;
+        this.size --;
+        // if item removed was last item in the queue
+        // move the last position down
+        while(this.items[this.last] == null) {
+            this.last--;
+        }
+        if(this.last < (this.items.length / 2) || this.size < this.items.length) {
+            // resize if half of its is not used
+            this.resize(this.items.length / 2);
+        }
+        return item;
+    }
+
+    public Item sample() {
+        // return a random item (but do not remove it)
+        // remove and return a random item
+        // get the position of a random element
+        int pos = StdRandom.uniform(0, this.last);
+        while(this.items[pos] == null) {
+            // goes to 0 if get to end
+            pos = (pos + 1) % this.size;
+        }
+        // remove the item
+        Item item = this.items[pos];
+        return item;
+    }
+
+    private void removeNulls() {
+        this.resize(this.size);
+    }
+
+    public Iterator<Item> iterator(){
+        // return an independent iterator over items in random order
+        return new RandomizedQueueIterator();
+    }
+
+    private class RandomizedQueueIterator implements Iterator<Item>{
+        private int pos = 0;
+        private RandomizedQueueIterator() {
+            removeNulls();
+            StdRandom.shuffle(items);
+        }
+        @Override
+        public boolean hasNext() {
+            // TODO Auto-generated method stub
+            return this.pos != size;
+        }
+
+        @Override
+        public Item next() {
+            // TODO Auto-generated method stub
+            Item item = items[this.pos];
+            this.pos++;
+            return item;
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+    }
+    
+    public static void main(String[] args) {
+        // unit testing (optional)
+    }
+}
