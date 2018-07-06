@@ -1,0 +1,83 @@
+----------------------------------------------
+----------------------------------------------
+ELEMENTARY SORTS
+----------------------------------------------
+----------------------------------------------
+Sorting Induction
+
+Sort any type of data?
+	- use a callback =  reference to executable code
+	- sorts uses a comparable interface
+	- no dependence on the data type
+
+Total Order:
+	antisymmetry if v<= w and w<=v then v=w
+	transitivity  if v <=w and w <=x then v <= x
+	totality either v<=w or w<=v or both
+
+less than = -1
+equal = 0
+greater than = +1
+----------------------------------------------
+Selection Sort
+
+scans from left to right
+
+Find smallest remaining entry
+
+Always quadratic
+----------------------------------------------
+Insertion Sort
+
+in iteration i, swap a[i] with each largest entry to its left
+
+scans from left to right
+1/4 N^2 compares
+
+if already sorted does it in N
+if descending order is used 1/2 N^2 and that includes swapping
+
+def inversion: a pair of keys that are out of order
+----------------------------------------------
+Shellsort
+
+h-sorting - Insertion sort with stride length h
+Why insertion sort?
+	Big increments => small subarray
+	Small increments => nearly in order
+
+A g-sorted array remains g-sorted afer h-sorting it
+
+Shellsort:
+	which increment sequence to use
+	H starts big
+	then gets to zero
+
+Open analysis
+Worse case O(N^(3/2))
+No real model has yet been discovered
+
+Useful in practice and simple idea leads to performance gains
+
+Still good algorithms out there
+----------------------------------------------
+Shuffling
+
+Assign each card a random number and sort based on that random number
+Knuth shuffle
+	walk through them and swap card with 0 to i
+----------------------------------------------
+Convex Hull
+
+	set of N points in a plane
+	smallest polygon that encloses all the points
+	(can be for N dimensions)
+
+	useful:
+		- finding two furthest points
+		- robots avoid obstacles
+
+Graham Scan - good implementation
+	- helps to have sorted points
+	
+----------------------------------------------
