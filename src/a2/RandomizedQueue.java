@@ -1,6 +1,8 @@
 package a2;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import edu.princeton.cs.algs4.StdRandom;
 
 public class RandomizedQueue<Item> implements Iterable<Item> {
@@ -11,7 +13,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     @SuppressWarnings("unchecked")
     public RandomizedQueue() {
         // construct an empty randomized queue
-        this.last = 0;
+        this.last = -1;
         this.size = 0;
         this.items = (Item[]) new Object[INIT_SIZE];
     }
@@ -31,10 +33,15 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         if (item == null) {
             throw new IllegalArgumentException();
         }
-        if (this.last == this.items.length) {
+        if (this.last + 1 == this.items.length) {
+            // the array is full
             // double the size of the array
             this.resize(this.items.length * 2);
         }
+        // move to the next position
+        this.last++;
+        this.items[this.last] = item;
+        this.size++;
     }
 
     @SuppressWarnings("unchecked")
@@ -42,24 +49,29 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         Item[] copy = (Item[]) new Object[capacity];
         int pos = 0;
         int copy_pos = 0;
-        while (pos < this.size) {
+        while (pos < this.items.length) {
             if(this.items[pos] != null) {
                 copy[copy_pos] = this.items[pos];
                 copy_pos++;
             }
             pos++;
+            
         }
         this.items = copy;
-        this.last = copy_pos;
+        // the last item that was added
+        this.last = copy_pos - 1;
     }
 
     public Item dequeue() {
         // remove and return a random item
         // get the position of a random element
-        int pos = StdRandom.uniform(0, this.last);
+        if(this.size == 0) {
+            throw new NoSuchElementException();
+        }
+        int pos = StdRandom.uniform(0, this.last + 1);
         while(this.items[pos] == null) {
             // goes to 0 if get to end
-            pos = (pos + 1) % this.size;
+            pos = (pos + 1) % this.items.length;
         }
         // remove the item
         Item item = this.items[pos];
@@ -67,10 +79,16 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         this.size --;
         // if item removed was last item in the queue
         // move the last position down
-        while(this.items[this.last] == null) {
-            this.last--;
+        if(this.size == 0) {
+            // no item left
+            this.last = -1;
+        }else {
+            // at least one so move down until find it
+            while(this.items[this.last] == null) {
+                this.last--;
+            }
         }
-        if(this.last < (this.items.length / 2) || this.size < this.items.length) {
+        if((this.last < (this.items.length / 2) || this.size < (this.items.length / 2)) && this.items.length > INIT_SIZE ) {
             // resize if half of its is not used
             this.resize(this.items.length / 2);
         }
@@ -81,12 +99,15 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         // return a random item (but do not remove it)
         // remove and return a random item
         // get the position of a random element
-        int pos = StdRandom.uniform(0, this.last);
+        if(this.size == 0) {
+            throw new NoSuchElementException();
+        }
+        int pos = StdRandom.uniform(0, this.last + 1);
         while(this.items[pos] == null) {
             // goes to 0 if get to end
             pos = (pos + 1) % this.size;
         }
-        // remove the item
+        // get the item
         Item item = this.items[pos];
         return item;
     }
