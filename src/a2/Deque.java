@@ -14,7 +14,7 @@ public class Deque<Item> implements Iterable<Item> {
         this.size = 0;
     }
 
-    private class Node{
+    private class Node {
         public Item item;
         public Node next;
         public Node prev;
@@ -35,14 +35,14 @@ public class Deque<Item> implements Iterable<Item> {
 
     public void addFirst(Item item) {
         // add the item to the front
-        if(item == null) {
+        if (item == null) {
             throw new IllegalArgumentException();
         }
-        if(this.first == null) {
+        if (this.first == null) {
             // empty list
             this.first = new Node(item);
             this.last = this.first;
-        }else {
+        } else {
             // this is one element in the list
             Node temp = this.first;
             this.first = new Node(item);
@@ -56,14 +56,14 @@ public class Deque<Item> implements Iterable<Item> {
 
     public void addLast(Item item) {
         // add the item to the end
-        if(item == null) {
+        if (item == null) {
             throw new IllegalArgumentException();
         }
-        if(this.last == null) {
+        if (this.last == null) {
             // empty deque
             this.first = new Node(item);
             this.last = this.first;
-        }else {
+         } else {
             // at least one element
             Node temp = this.last;
             this.last = new Node(item);
@@ -76,16 +76,16 @@ public class Deque<Item> implements Iterable<Item> {
 
     public Item removeFirst() {
         // remove and return the item from the front
-        if(this.size == 0) {
+        if (this.size == 0) {
             throw new NoSuchElementException();
         }
         Item result = null;
-        if(this.size == 1) {
+        if (this.size == 1) {
             // if only one element then need to update first too
             this.last = null;
             result = this.first.item;
             this.first = null;
-        }else {
+        } else {
             // there is at least two elements
             result = this.first.item;
             this.first = this.first.next;
@@ -98,16 +98,16 @@ public class Deque<Item> implements Iterable<Item> {
 
     public Item removeLast() {
         // remove and return the item from the end
-        if(this.size == 0) {
+        if (this.size == 0) {
             throw new NoSuchElementException();
         }
         Item result = null;
-        if(this.size == 1) {
+        if (this.size == 1) {
             // if only one element then need to update first too
             this.first = null;
             result = this.last.item;
             this.last = null;
-        }else {
+        } else {
             // there is at least two elements
             result = this.last.item;
             this.last = this.last.prev;
@@ -123,7 +123,7 @@ public class Deque<Item> implements Iterable<Item> {
         return new DequeIterator();
     }
 
-    private class DequeIterator implements Iterator<Item>{
+    private class DequeIterator implements Iterator<Item> {
         private Node current = first;
 
         @Override
@@ -134,7 +134,9 @@ public class Deque<Item> implements Iterable<Item> {
 
         @Override
         public Item next() {
-            // TODO Auto-generated method stub
+            if (current == null) {
+                throw new NoSuchElementException();
+            }
             Item item = current.item;
             current = current.next;
             return item;
