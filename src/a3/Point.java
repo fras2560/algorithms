@@ -64,9 +64,9 @@ public class Point implements Comparable<Point> {
         if (this.x == that.x && this.y == that.y) {
             value = Double.NEGATIVE_INFINITY;
         } else if (this.y == that.y) {
-            value = Double.POSITIVE_INFINITY; 
+            value = +0.0; 
         } else if (this.x == that.x) {
-            value = +0.0;
+            value = Double.POSITIVE_INFINITY;
         } else {
             value = ((double)(that.y - this.y)) / ((double) (that.x - this.x));
         }
@@ -123,7 +123,7 @@ public class Point implements Comparable<Point> {
      * @return the Comparator that defines this ordering on points
      */
     public Comparator<Point> slopeOrder() {
-        return  (Point p1, Point p2) -> this.slopeCompare(this.slopeTo(p1), this.slopeTo(p2));
+        return (Point p1, Point p2) -> this.slopeCompare(this.slopeTo(p1), this.slopeTo(p2));
     }
 
 
