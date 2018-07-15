@@ -5,26 +5,29 @@ import edu.princeton.cs.algs4.StdOut;
 import java.util.Arrays;
 
 public class FastCollinearPoints {
-    private LineSegment[] lines;
-    private int numberSegments;
+    private final LineSegment[] lines;
+    private final int numberSegments;
+    private final static double EPSILON = 0.000000001; 
     public FastCollinearPoints(Point[] points) {
-        this.lines = new LineSegment[points.length];
+        int numSegments = 0;
+        LineSegment[] tempLines = new LineSegment[points.length]; 
         for (int i = 0; i < points.length; i++) {
             Point origin = points[i];
             Arrays.sort(points, i+1, points.length, origin.slopeOrder());
-            this.pullLines(origin, points, i+1);
+            numSegments = this.pullLines(tempLines, numSegments, origin, points, i+1);
         }
-        this.lines = FastCollinearPoints.resize(this.lines, this.numberSegments);
+        this.lines = FastCollinearPoints.resize(tempLines, numSegments);
+        this.numberSegments = numSegments;
     }
 
-    private void pullLines(Point origin, Point[] points, int i) {
+    private int pullLines(LineSegment[] lines, int lineCount, Point origin, Point[] points, int i) {
         // now check values
         double prev = 0;
         int count = 1;
         Point smallest = origin;
         Point largest = origin;
         while (i < points.length) {
-            if (origin.slopeTo(points[i]) == prev) {
+            if (Math.abs(origin.slopeTo(points[i])  - prev) < EPSILON) {
                 if (points[i].compareTo(smallest) <= 0) {
                     smallest = points[i];
                 }
@@ -34,11 +37,11 @@ public class FastCollinearPoints {
                 count += 1;
             } else {
                 if(count >= 3) {
-                    if(this.numberSegments == this.lines.length) {
-                        this.lines = FastCollinearPoints.resize(this.lines, this.numberSegments * 2);
+                    if(lineCount == lines.length) {
+                        lines = FastCollinearPoints.resize(lines, lineCount * 2);
                     }
-                    this.lines[this.numberSegments] = new LineSegment(smallest, largest);
-                    this.numberSegments += 1;
+                    lines[lineCount] = new LineSegment(smallest, largest);
+                    lineCount += 1;
                 }
                 count = 1;
                 smallest = points[i].compareTo(origin) <= 0 ? points[i] : origin;
@@ -48,19 +51,21 @@ public class FastCollinearPoints {
             i++;
         }
         if (count >= 3) {
-            if(this.numberSegments == this.lines.length) {
-                this.lines = FastCollinearPoints.resize(this.lines, this.numberSegments * 2);
+            if(lineCount == lines.length) {
+                lines = FastCollinearPoints.resize(lines, lineCount * 2);
             }
-            this.lines[this.numberSegments] = new LineSegment(smallest, largest);
-            this.numberSegments += 1;
+            lines[lineCount] = new LineSegment(smallest, largest);
+            lineCount += 1;
         }
+        return lineCount;
     }
+
     public int numberOfSegments() {
         return this.numberSegments;
     }
 
     public LineSegment[] segments() {
-        return this.lines;
+        return Arrays.copyOf(this.lines, this.lines.length);
     }
 
     public static LineSegment[] resize(LineSegment[] array, int capacity) {

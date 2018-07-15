@@ -1,4 +1,6 @@
 package a3;
+import java.util.Arrays;
+
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdOut;
@@ -8,12 +10,13 @@ import edu.princeton.cs.algs4.StdOut;
  *
  */
 public class BruteCollinearPoints {
-    private LineSegment[] lines;
-    private int numberSegments;
+    private final LineSegment[] lines;
+    private final int numberSegments;
+    private final static double EPSILON = 0.000000001; 
     public BruteCollinearPoints(Point[] points) {
         double s1,s2,s3;
-        this.numberSegments = 0;
-        this.lines = new LineSegment[points.length];
+        int segmentCount = 0;
+        LineSegment[] lineSegments = new LineSegment[points.length];
         for(int p1 = 0; p1 < points.length; p1++) {
             for(int p2 = p1+1; p2 < points.length; p2++) {
                 for(int p3 = p2+1; p3 < points.length; p3++) {
@@ -21,27 +24,28 @@ public class BruteCollinearPoints {
                         s1 = points[p1].slopeTo(points[p2]);
                         s2 = points[p1].slopeTo(points[p3]);
                         s3 = points[p1].slopeTo(points[p4]);
-                        if(s1 == s2 && s1 == s3) {
-                            if(this.numberSegments == this.lines.length) {
-                                this.lines = BruteCollinearPoints.resize(this.lines, this.numberSegments * 2);
+                        if(Math.abs(s1 - s2) < EPSILON && Math.abs(s1 - s3) < EPSILON) {
+                            if(segmentCount == lineSegments.length) {
+                                lineSegments = BruteCollinearPoints.resize(lineSegments, segmentCount * 2);
                             }
-                            this.lines[this.numberSegments] = new LineSegment(BruteCollinearPoints.smallestPoint(points[p1],
-                                                                                                   points[p2],
-                                                                                                   points[p3],
-                                                                                                   points[p4]),
-                                                                              BruteCollinearPoints.largestPoint(points[p1],
-                                                                                                  points[p2],
-                                                                                                  points[p3],
-                                                                                                  points[p4])
+                            lineSegments[segmentCount] = new LineSegment(BruteCollinearPoints.smallestPoint(points[p1],
+                                                                                                            points[p2],
+                                                                                                            points[p3],
+                                                                                                            points[p4]),
+                                                                         BruteCollinearPoints.largestPoint(points[p1],
+                                                                                                           points[p2],
+                                                                                                           points[p3],
+                                                                                                           points[p4])
                                                                               );
-                            this.numberSegments += 1;
+                            segmentCount += 1;
                         }
                         
                     }
                 }
             }
         }
-        this.lines = BruteCollinearPoints.resize(this.lines, this.numberSegments);
+        this.lines = BruteCollinearPoints.resize(lineSegments, segmentCount);
+        this.numberSegments = segmentCount;
     }
 
     public int numberOfSegments() {
@@ -49,7 +53,7 @@ public class BruteCollinearPoints {
     }
 
     public LineSegment[] segments() {
-        return this.lines;
+        return Arrays.copyOf(this.lines, this.lines.length);
     }
 
     private static Point smallestPoint(Point p1, Point p2, Point p3, Point p4) {
