@@ -1,6 +1,4 @@
 /******************************************************************************
- *  Compilation:  javac -cp  "alg4s.jar" PercolationStats.java
- *  Execution:    java PercolationStats int:size int:trials
  *  Dependencies: algs4
  *  Author: Dallas Fraser
  *  A program to test various statistics about percolation

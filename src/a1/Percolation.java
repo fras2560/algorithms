@@ -1,6 +1,4 @@
 /******************************************************************************
- *  Compilation:  javac -cp  "alg4s.jar" Percolation.java
- *  Execution:    java Percolation
  *  Dependencies: algs4
  *  Author: Dallas Fraser
  *  A data structure to see if something percolates.
