@@ -32,12 +32,22 @@ public class FastCollinearPoints {
 	 *            the list of points
 	 */
 	public FastCollinearPoints(Point[] points) {
+
+		// points cannot be null
+		if (points == null) {
+			throw new IllegalArgumentException();
+		}
+
 		int numSegments = 0;
 		LineSegment[] tempLines = new LineSegment[points.length];
 
 		for (int i = 0; i < points.length; i++) {
 			Point origin = points[i];
-			Arrays.sort(points, i+1, points.length, origin.slopeOrder());
+			try {
+				Arrays.sort(points, i+1, points.length, origin.slopeOrder());
+			} catch (NullPointerException exception) {
+				throw new IllegalArgumentException();
+			}
 			numSegments = this.pullLines(tempLines, numSegments, origin, points, i+1);
 		}
 
@@ -62,6 +72,12 @@ public class FastCollinearPoints {
 	 * @return int the number of lines after pulling lines
 	 */
 	private int pullLines(LineSegment[] lines, int lineCount, Point origin, Point[] points, int i) {
+
+		// origin cannot be null
+		if (origin == null) {
+			throw new IllegalArgumentException();
+		}
+
 		// now check values
 		double prev = 0;
 		int count = 1;
@@ -69,6 +85,12 @@ public class FastCollinearPoints {
 		Point largest = origin;
 
 		while (i < points.length) {
+
+			// check if there are any duplicate points
+			if (origin.slopeTo(points[i]) == Double.NEGATIVE_INFINITY) {
+				throw new IllegalArgumentException();
+			}
+
 			if (Math.abs(origin.slopeTo(points[i])  - prev) < EPSILON) {
 				if (points[i].compareTo(smallest) <= 0) {
 					smallest = points[i];

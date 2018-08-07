@@ -31,6 +31,13 @@ public class BruteCollinearPoints {
 	 *            the list of points
 	 */
 	public BruteCollinearPoints(Point[] points) {
+
+		// points cannot be null
+		if (points == null) {
+			throw new IllegalArgumentException();
+		}
+
+		// initialize some variables
 		double s1;
 		double s2;
 		double s3;
@@ -40,11 +47,11 @@ public class BruteCollinearPoints {
 		// four loops to find all points that are collinear
 		for (int p1 = 0; p1 < points.length; p1++) {
 			for (int p2 = p1 + 1; p2 < points.length; p2++) {
+				s1 = this.computeSlope(points[p1], points[p2]);
 				for (int p3 = p2 + 1; p3 < points.length; p3++) {
+					s2 = this.computeSlope(points[p1], points[p3]);
 					for (int p4 = p3 + 1; p4 < points.length; p4++) {
-						s1 = points[p1].slopeTo(points[p2]);
-						s2 = points[p1].slopeTo(points[p3]);
-						s3 = points[p1].slopeTo(points[p4]);
+						s3 = this.computeSlope(points[p1], points[p4]);
 
 						// compare the floating point to lines closer than EPILON or equal (vertical
 						// lines)
@@ -52,15 +59,9 @@ public class BruteCollinearPoints {
 							if (segmentCount == lineSegments.length) {
 								lineSegments = BruteCollinearPoints.resize(lineSegments, segmentCount * 2);
 							}
-							lineSegments[segmentCount] = new LineSegment(BruteCollinearPoints.smallestPoint(points[p1],
-									points[p2],
-									points[p3],
-									points[p4]),
-									BruteCollinearPoints.largestPoint(points[p1],
-											points[p2],
-											points[p3],
-											points[p4])
-									);
+							lineSegments[segmentCount] = new LineSegment(
+									BruteCollinearPoints.smallestPoint(points[p1], points[p2], points[p3], points[p4]),
+									BruteCollinearPoints.largestPoint(points[p1], points[p2], points[p3], points[p4]));
 							segmentCount += 1;
 						}
 					}
@@ -71,6 +72,16 @@ public class BruteCollinearPoints {
 		this.numberSegments = segmentCount;
 	}
 
+	private double computeSlope(Point p1, Point p2) {
+		if (p1 == null || p2 == null) {
+			throw new IllegalArgumentException();
+		}
+		double slope = p1.slopeTo(p2);
+		if (slope == Double.NEGATIVE_INFINITY) {
+			throw new IllegalArgumentException();
+		}
+		return slope;
+	}
 	/**
 	 * Returns the number of line segments
 	 *

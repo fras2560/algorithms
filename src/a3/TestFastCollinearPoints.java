@@ -36,4 +36,54 @@ public class TestFastCollinearPoints {
 		assertEquals(lines[0].toString(), new LineSegment(new Point(0, 0), new Point(3, 3)).toString());
 		assertEquals(lines[1].toString(), new LineSegment(new Point(0, 3), new Point(9, 12)).toString());
 	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testDuplicatePointsTestCase1() {
+		this.points = new Point[] { new Point(42156, 28089), new Point(20049, 13216), new Point(20049, 13216),
+				new Point(1000, 28000) };
+		new FastCollinearPoints(this.points);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testDuplicatePointsTestCase2() {
+		this.points = new Point[] { new Point(20049, 13216), new Point(42156, 28089), new Point(20049, 13216),
+				new Point(1000, 28000) };
+		new FastCollinearPoints(this.points);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testDuplicatePointsTestCase3() {
+		this.points = new Point[] { new Point(20049, 13216), new Point(20049, 13216), new Point(42156, 28089) };
+		new FastCollinearPoints(this.points);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testNullPoints() {
+		new FastCollinearPoints(null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testNullPointTestCase1() {
+		this.points = new Point[] { null, new Point(42156, 28089), new Point(20049, 13216), new Point(1000, 28000) };
+		new FastCollinearPoints(this.points);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testNullPointTestCase2() {
+		this.points = new Point[] { new Point(42156, 28089), null, new Point(20049, 13216), new Point(1000, 28000) };
+		new FastCollinearPoints(this.points);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testNullPointTestCase3() {
+		this.points = new Point[] { new Point(42156, 28089), new Point(20049, 13216), null, new Point(1000, 28000) };
+		new FastCollinearPoints(this.points);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testNullPointTestCase4() {
+		this.points = new Point[] { new Point(42156, 28089), new Point(20049, 13216), new Point(1000, 28000), null };
+		new FastCollinearPoints(this.points);
+	}
+
 }
