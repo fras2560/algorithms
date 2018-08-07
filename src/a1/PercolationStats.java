@@ -1,6 +1,6 @@
 /******************************************************************************
- *  Compilation:  javac -cp  "alg4s.jar" Percolation.java
- *  Execution:    java PercolationStats
+ *  Compilation:  javac -cp  "alg4s.jar" PercolationStats.java
+ *  Execution:    java PercolationStats int:size int:trials
  *  Dependencies: algs4
  *  Author: Dallas Fraser
  *  A program to test various statistics about percolation
@@ -98,7 +98,7 @@ public class PercolationStats {
 
 	/**
 	 * Ouputs the mean, standard deviation and the 95% confidence interval
-	 * 
+	 *
 	 * @param args
 	 *            (size, trials) the size of the structure, the number of trials to
 	 *            run
