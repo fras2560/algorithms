@@ -36,7 +36,7 @@ public class BruteCollinearPoints {
 		double s3;
 		int segmentCount = 0;
 		LineSegment[] lineSegments = new LineSegment[points.length];
-		System.out.println("Starting");
+
 		// four loops to find all points that are collinear
 		for (int p1 = 0; p1 < points.length; p1++) {
 			for (int p2 = p1 + 1; p2 < points.length; p2++) {
@@ -46,16 +46,8 @@ public class BruteCollinearPoints {
 						s2 = points[p1].slopeTo(points[p3]);
 						s3 = points[p1].slopeTo(points[p4]);
 
-						if (points[p1].toString().equals("(1000, 17000)")
-								&& points[p2].toString().equals("(1000, 27000)")
-								&& points[p3].toString().equals("(1000, 31000)")) {
-							System.out.println(points[p1].toString() + " " + points[p2].toString() + " "
-									+ points[p3].toString() + " " + points[p4].toString());
-							System.out.println(s1 + " " + s2 + " " + s3);
-							System.out.println((s1 == s2 && s1 == s3));
-							System.out.println(s1 == s2);
-						}
-
+						// compare the floating point to lines closer than EPILON or equal (vertical
+						// lines)
 						if ((Math.abs(s1 - s2) < EPSILON && Math.abs(s1 - s3) < EPSILON) || (s1 == s2 && s1 == s3)) {
 							if (segmentCount == lineSegments.length) {
 								lineSegments = BruteCollinearPoints.resize(lineSegments, segmentCount * 2);
