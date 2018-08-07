@@ -37,6 +37,17 @@ public class TestFastCollinearPoints {
 		assertEquals(lines[1].toString(), new LineSegment(new Point(0, 3), new Point(9, 12)).toString());
 	}
 
+	@Test
+	public void testVerticalCollinearPointsVerticalLine() {
+		this.points = new Point[] { new Point(1000, 17000), new Point(1000, 27000), new Point(1000, 31000),
+				new Point(1000, 28000) };
+		FastCollinearPoints bcp = new FastCollinearPoints(this.points);
+		assertEquals(bcp.numberOfSegments(), 1);
+		LineSegment[] lines = bcp.segments();
+		assertEquals(lines.length, 1);
+		assertEquals(lines[0].toString(), new LineSegment(new Point(1000, 17000), new Point(1000, 31000)).toString());
+	}
+
 	@Test(expected = IllegalArgumentException.class)
 	public void testDuplicatePointsTestCase1() {
 		this.points = new Point[] { new Point(42156, 28089), new Point(20049, 13216), new Point(20049, 13216),

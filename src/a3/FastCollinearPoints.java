@@ -79,19 +79,21 @@ public class FastCollinearPoints {
 		}
 
 		// now check values
+		double slope;
 		double prev = 0;
 		int count = 1;
 		Point smallest = origin;
 		Point largest = origin;
 
 		while (i < points.length) {
+			slope = origin.slopeTo(points[i]);
 
 			// check if there are any duplicate points
-			if (origin.slopeTo(points[i]) == Double.NEGATIVE_INFINITY) {
+			if (slope == Double.NEGATIVE_INFINITY) {
 				throw new IllegalArgumentException();
 			}
 
-			if (Math.abs(origin.slopeTo(points[i])  - prev) < EPSILON) {
+			if (Math.abs(slope  - prev) < EPSILON ||  slope == prev) {
 				if (points[i].compareTo(smallest) <= 0) {
 					smallest = points[i];
 				}
