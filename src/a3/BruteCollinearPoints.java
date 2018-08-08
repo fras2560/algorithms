@@ -32,8 +32,8 @@ public class BruteCollinearPoints {
 	 */
 	public BruteCollinearPoints(Point[] points) {
 
-		// points cannot be null
-		if (points == null) {
+		// points cannot be null or any particular point
+		if (points == null || Arrays.asList(points).contains(null)) {
 			throw new IllegalArgumentException();
 		}
 

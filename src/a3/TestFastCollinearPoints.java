@@ -48,6 +48,40 @@ public class TestFastCollinearPoints {
 		assertEquals(lines[0].toString(), new LineSegment(new Point(1000, 17000), new Point(1000, 31000)).toString());
 	}
 
+	@Test
+	public void testHorizontalCollinearPoints() {
+		this.points = new Point[] {new Point(7453, 14118),
+				new Point(2682, 14118),
+				new Point(7821, 14118),
+				new Point(5067, 14118),
+				new Point(9972, 4652),
+				new Point(16307, 4652),
+				new Point(5766, 4652),
+				new Point(4750, 4652),
+				new Point(13291, 7996),
+				new Point(20547, 7996),
+				new Point(10411, 7996),
+				new Point(8934, 7996),
+				new Point(1888, 7657),
+				new Point(7599, 7657),
+				new Point(12772, 7657),
+				new Point(13832, 7657),
+				new Point(10375, 12711),
+				new Point(14226, 12711),
+				new Point(20385, 12711),
+				new Point(18177, 12711) };
+		FastCollinearPoints bcp = new FastCollinearPoints(this.points);
+		assertEquals(bcp.numberOfSegments(), 5);
+		LineSegment[] lines = bcp.segments();
+		assertEquals(lines.length, 5);
+
+		assertEquals(lines[0].toString(), new LineSegment(new Point(2682, 14118), new Point(7821, 14118)).toString());
+		assertEquals(lines[1].toString(), new LineSegment(new Point(1888, 7657), new Point(13832, 7657)).toString());
+		assertEquals(lines[2].toString(), new LineSegment(new Point(4750, 4652), new Point(16307, 4652)).toString());
+		assertEquals(lines[3].toString(), new LineSegment(new Point(8934, 7996), new Point(20547, 7996)).toString());
+		assertEquals(lines[4].toString(), new LineSegment(new Point(10375, 12711), new Point(20385, 12711)).toString());
+	}
+
 	@Test(expected = IllegalArgumentException.class)
 	public void testDuplicatePointsTestCase1() {
 		this.points = new Point[] { new Point(42156, 28089), new Point(20049, 13216), new Point(20049, 13216),
@@ -97,4 +131,9 @@ public class TestFastCollinearPoints {
 		new FastCollinearPoints(this.points);
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void testOneNullPoint() {
+		this.points = new Point[] { null };
+		new FastCollinearPoints(this.points);
+	}
 }

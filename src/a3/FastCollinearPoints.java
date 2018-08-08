@@ -6,7 +6,11 @@
  *
  ******************************************************************************/
 package a3;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdDraw;
@@ -33,98 +37,70 @@ public class FastCollinearPoints {
 	 */
 	public FastCollinearPoints(Point[] points) {
 
-		// points cannot be null
-		if (points == null) {
+		// points cannot be null or any particular point
+		if (points == null || Arrays.asList(points).contains(null)) {
 			throw new IllegalArgumentException();
 		}
 
-		int numSegments = 0;
-		LineSegment[] tempLines = new LineSegment[points.length];
+		List<Point> pointList = new ArrayList<>(Arrays.asList(points));
+		List<LineSegment> tempLines = new ArrayList<>();
 
-		for (int i = 0; i < points.length; i++) {
-			Point origin = points[i];
-			try {
-				Arrays.sort(points, i+1, points.length, origin.slopeOrder());
-			} catch (NullPointerException exception) {
-				throw new IllegalArgumentException();
-			}
-			numSegments = this.pullLines(tempLines, numSegments, origin, points, i+1);
+		for (Point point : points) {
+			Point origin = pointList.remove(0);
+			Collections.sort(pointList, origin.slopeOrder());
+			this.pullLines(tempLines, origin, pointList);
 		}
-
-		this.lines = FastCollinearPoints.resize(tempLines, numSegments);
-		this.numberSegments = numSegments;
+		this.lines = tempLines.toArray(new LineSegment[0]);
+		this.numberSegments = tempLines.size();
 	}
 
 	/**
-	 * Updates the lines array by adding any lines from the origin that are
-	 * collinear
+	 * Pulls the collinear lines and adds them to the given lines list
 	 *
 	 * @param lines
-	 *            an array of the line segments
-	 * @param lineCount
-	 *            the number of lines
+	 *            a list of lines
 	 * @param origin
 	 *            the origin point
 	 * @param points
 	 *            a list of points
-	 * @param i
-	 *            the point to start comparing at
-	 * @return int the number of lines after pulling lines
 	 */
-	private int pullLines(LineSegment[] lines, int lineCount, Point origin, Point[] points, int i) {
+	private void pullLines(List<LineSegment> lines, Point origin, List<Point> points) {
 
-		// origin cannot be null
-		if (origin == null) {
-			throw new IllegalArgumentException();
+		// initialize some values
+		int count;
+		double prevSlope;
+		Point current = null;
+		Point smallest;
+		Point largest;
+
+		// get an iterator and init current to the first element
+		Iterator<Point> point = points.iterator();
+		if (!point.hasNext()) {
+			return;
 		}
+		current = nextPoint(point);
+		while (current != null) {
 
-		// now check values
-		double slope;
-		double prev = 0;
-		int count = 1;
-		Point smallest = origin;
-		Point largest = origin;
+			// set the largest and smallest, and count and previous slope
+			count = 0;
+			prevSlope = origin.slopeTo(current);
+			smallest = origin.compareTo(current) <= 0 ? origin : current;
+			largest = origin.compareTo(current) >= 0 ? origin : current;
 
-		while (i < points.length) {
-			slope = origin.slopeTo(points[i]);
-
-			// check if there are any duplicate points
-			if (slope == Double.NEGATIVE_INFINITY) {
-				throw new IllegalArgumentException();
-			}
-
-			if (Math.abs(slope  - prev) < EPSILON ||  slope == prev) {
-				if (points[i].compareTo(smallest) <= 0) {
-					smallest = points[i];
-				}
-				if (points[i].compareTo(largest) >= 0) {
-					largest = points[i];
-				}
+			// see how many points in a row have the same slope to the origin
+			while (current != null && FastCollinearPoints.sameSlope(prevSlope, origin.slopeTo(current))) {
+				largest = largest.compareTo(current) >= 0 ? largest : current;
+				smallest = smallest.compareTo(current) <= 0 ? smallest : current;
 				count += 1;
-			} else {
-				if(count >= 3) {
-					if(lineCount == lines.length) {
-						lines = FastCollinearPoints.resize(lines, lineCount * 2);
-					}
-					lines[lineCount] = new LineSegment(smallest, largest);
-					lineCount += 1;
-				}
-				count = 1;
-				smallest = points[i].compareTo(origin) <= 0 ? points[i] : origin;
-				largest = points[i].compareTo(origin) >= 0 ? points[i] : origin;
-				prev = origin.slopeTo(points[i]);
+				current = nextPoint(point);
 			}
-			i++;
-		}
 
-		if (count >= 3) {
-			if(lineCount == lines.length) {
-				lines = FastCollinearPoints.resize(lines, lineCount * 2);
+			LineSegment line = new LineSegment(smallest, largest);
+			// check to see if have enough points and is an unique line
+			if (count >= 3 && FastCollinearPoints.uniqueLineSegment(lines, line)) {
+				lines.add(line);
 			}
-			lines[lineCount] = new LineSegment(smallest, largest);
-			lineCount += 1;
 		}
-		return lineCount;
 	}
 
 	/**
@@ -137,6 +113,36 @@ public class FastCollinearPoints {
 	}
 
 	/**
+	 * Returns whether the two given slopes are the same
+	 *
+	 * @param s1
+	 *            the first slope
+	 * @param s2
+	 *            the second slope
+	 * @return true if slopes are considered the same, false otherwise
+	 */
+	private static boolean sameSlope(double s1, double s2) {
+		if (s1 == Double.NEGATIVE_INFINITY || s2 == Double.NEGATIVE_INFINITY) {
+			throw new IllegalArgumentException();
+		}
+		return Math.abs(s1 - s2) < EPSILON || s1 == s2;
+	}
+
+	/**
+	 * Returns the next point or null if no point is available
+	 *
+	 * @param points
+	 *            the points iterator
+	 * @return Point or null
+	 */
+	private static Point nextPoint(Iterator<Point> points) {
+		if (points.hasNext()) {
+			return points.next();
+		}
+		return null;
+	}
+
+	/**
 	 * Returns the line segments
 	 *
 	 * @return an array copy of the line segments
@@ -146,29 +152,22 @@ public class FastCollinearPoints {
 	}
 
 	/**
-	 * Returns a resized segment
+	 * Check to see if the line segment is unique and not already added yet
 	 *
-	 * @param array
-	 *            the array of lines
-	 * @param capacity
-	 *            the new capacity to resize to
-	 * @return a resized array of line segments
+	 * @param lines
+	 *            the list of lines
+	 * @param lineCheck
+	 *            the line to check
+	 * @return true if unique, false otherwise
 	 */
-	private static LineSegment[] resize(LineSegment[] array, int capacity) {
-		LineSegment[] copy = new LineSegment[capacity];
-		int pos = 0;
-		int copyPos = 0;
-		while (pos < array.length) {
-			if (array[pos] != null) {
-				copy[copyPos] = array[pos];
-				copyPos++;
+	private static boolean uniqueLineSegment(List<LineSegment> lines, LineSegment lineCheck) {
+		for (LineSegment line: lines) {
+			if (line.toString().equals(lineCheck.toString())) {
+				return false;
 			}
-			pos++;
-
 		}
-		return copy;
+		return true;
 	}
-
 	/**
 	 * The main for testing
 	 *

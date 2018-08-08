@@ -37,6 +37,17 @@ public class TestBruteCollinearPoints {
 		assertEquals(lines[1].toString(), new LineSegment(new Point(0, 3), new Point(9, 12)).toString());
 	}
 
+	@Test
+	public void testBruteCollinearPointsVerticalLine() {
+		this.points = new Point[] { new Point(1000, 17000), new Point(1000, 27000), new Point(1000, 31000),
+				new Point(1000, 28000) };
+		BruteCollinearPoints bcp = new BruteCollinearPoints(this.points);
+		assertEquals(bcp.numberOfSegments(), 1);
+		LineSegment[] lines = bcp.segments();
+		assertEquals(lines.length, 1);
+		assertEquals(lines[0].toString(), new LineSegment(new Point(1000, 17000), new Point(1000, 31000)).toString());
+	}
+
 	@Test(expected = IllegalArgumentException.class)
 	public void testDuplicatePointsTestCase1() {
 		this.points = new Point[] { new Point(42156, 28089), new Point(20049, 13216), new Point(20049, 13216),
@@ -86,16 +97,9 @@ public class TestBruteCollinearPoints {
 		new BruteCollinearPoints(this.points);
 	}
 
-	@Test
-	public void testBruteCollinearPointsVerticalLine() {
-		this.points = new Point[] {new Point(1000, 17000),
-				new Point(1000, 27000),
-				new Point(1000, 31000),
-				new Point(1000, 28000) };
-		BruteCollinearPoints bcp = new BruteCollinearPoints(this.points);
-		assertEquals(bcp.numberOfSegments(), 1);
-		LineSegment[] lines = bcp.segments();
-		assertEquals(lines.length, 1);
-		assertEquals(lines[0].toString(), new LineSegment(new Point(1000, 17000), new Point(1000, 31000)).toString());
+	@Test(expected = IllegalArgumentException.class)
+	public void testOneNullPoint() {
+		this.points = new Point[] { null };
+		new BruteCollinearPoints(this.points);
 	}
 }
