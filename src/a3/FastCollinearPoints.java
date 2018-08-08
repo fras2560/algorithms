@@ -43,17 +43,30 @@ public class FastCollinearPoints {
 		}
 
 		List<Point> pointList = new ArrayList<>(Arrays.asList(points));
-		List<LineSegment> tempLines = new ArrayList<>();
-
-		for (Point point : points) {
+		List<Point[]> tempLines = new ArrayList<>();
+		while (!pointList.isEmpty()) {
 			Point origin = pointList.remove(0);
 			Collections.sort(pointList, origin.slopeOrder());
 			this.pullLines(tempLines, origin, pointList);
 		}
-		this.lines = tempLines.toArray(new LineSegment[0]);
+		this.lines = createLines(tempLines);
 		this.numberSegments = tempLines.size();
 	}
 
+	/**
+	 * Creates the line segment array from the given points
+	 *
+	 * @param lineSegments
+	 *            a list of two points forming a line
+	 * @return an array of line segments
+	 */
+	private static LineSegment[] createLines(List<Point[]> lineSegments) {
+		LineSegment[] createdLines = new LineSegment[lineSegments.size()];
+		for (int i = 0; i < lineSegments.size(); i++) {
+			createdLines[i] = new LineSegment(lineSegments.get(i)[0], lineSegments.get(i)[1]);
+		}
+		return createdLines;
+	}
 	/**
 	 * Pulls the collinear lines and adds them to the given lines list
 	 *
@@ -64,7 +77,7 @@ public class FastCollinearPoints {
 	 * @param points
 	 *            a list of points
 	 */
-	private void pullLines(List<LineSegment> lines, Point origin, List<Point> points) {
+	private void pullLines(List<Point[]> lineSegments, Point origin, List<Point> points) {
 
 		// initialize some values
 		int count;
@@ -95,10 +108,10 @@ public class FastCollinearPoints {
 				current = nextPoint(point);
 			}
 
-			LineSegment line = new LineSegment(smallest, largest);
+			Point[] line = new Point[] { smallest, largest };
 			// check to see if have enough points and is an unique line
-			if (count >= 3 && FastCollinearPoints.uniqueLineSegment(lines, line)) {
-				lines.add(line);
+			if (count >= 3 && FastCollinearPoints.uniqueLineSegment(lineSegments, line)) {
+				lineSegments.add(line);
 			}
 		}
 	}
@@ -160,9 +173,14 @@ public class FastCollinearPoints {
 	 *            the line to check
 	 * @return true if unique, false otherwise
 	 */
-	private static boolean uniqueLineSegment(List<LineSegment> lines, LineSegment lineCheck) {
-		for (LineSegment line: lines) {
-			if (line.toString().equals(lineCheck.toString())) {
+	private static boolean uniqueLineSegment(List<Point[]> lineSegments, Point[] lineCheck) {
+		for (Point[] linePoints : lineSegments) {
+			if ((linePoints[0].compareTo(lineCheck[0]) == 0 && linePoints[1].compareTo(lineCheck[1]) == 0)
+					|| (linePoints[0].compareTo(lineCheck[0]) == 0
+					&& sameSlope(linePoints[0].slopeTo(lineCheck[1]), linePoints[0].slopeTo(linePoints[1])))
+					|| (linePoints[1].compareTo(lineCheck[1]) == 0
+					&& sameSlope(linePoints[1].slopeTo(lineCheck[0]), linePoints[1].slopeTo(linePoints[0])))) {
+				// line are identical
 				return false;
 			}
 		}

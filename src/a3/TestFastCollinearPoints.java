@@ -74,12 +74,30 @@ public class TestFastCollinearPoints {
 		assertEquals(bcp.numberOfSegments(), 5);
 		LineSegment[] lines = bcp.segments();
 		assertEquals(lines.length, 5);
-
 		assertEquals(lines[0].toString(), new LineSegment(new Point(2682, 14118), new Point(7821, 14118)).toString());
 		assertEquals(lines[1].toString(), new LineSegment(new Point(1888, 7657), new Point(13832, 7657)).toString());
 		assertEquals(lines[2].toString(), new LineSegment(new Point(4750, 4652), new Point(16307, 4652)).toString());
 		assertEquals(lines[3].toString(), new LineSegment(new Point(8934, 7996), new Point(20547, 7996)).toString());
 		assertEquals(lines[4].toString(), new LineSegment(new Point(10375, 12711), new Point(20385, 12711)).toString());
+	}
+
+	@Test
+	public void testCourseraCase9() {
+		this.points = new Point[] {
+				new Point(9000, 9000),
+				new Point(8000, 8000),
+				new Point(7000, 7000),
+				new Point(6000, 6000),
+				new Point(5000, 5000),
+				new Point(4000, 4000),
+				new Point(3000, 3000),
+				new Point(2000, 2000),
+				new Point(1000, 1000) };
+		FastCollinearPoints bcp = new FastCollinearPoints(this.points);
+		assertEquals(bcp.numberOfSegments(), 1);
+		LineSegment[] lines = bcp.segments();
+		assertEquals(lines.length, 1);
+		assertEquals(lines[0].toString(), new LineSegment(new Point(1000, 1000), new Point(9000, 9000)).toString());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
