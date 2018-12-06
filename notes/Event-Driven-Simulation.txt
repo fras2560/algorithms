@@ -1,0 +1,8 @@
+Event-Driven Simulation
+------------------------------------------
+
+N moving particlaes to behave the laws of elastic collision
+
+Prediction and Resolution
+	- can predict the moment when they will collide
+	
