@@ -1,17 +1,15 @@
 package a4;
-
-import edu.princeton.cs.algs4.StdRandom;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class Board {
-
+  private final static Random RANDOM = new Random();
   private static int OPEN_BLOCK = 0;
   private int[][] blocks;
   private final int dimension;
-
+  
   /**
    * The default constructor for the board.
    * @param blocks a N by N board of blocks
@@ -20,7 +18,7 @@ public class Board {
     // construct a board from an n-by-n array of block}
     // (where blocks[i][j] = block in row i, column j)
     this.dimension = blocks.length;
-    this.blocks = blocks.clone();
+    this.blocks = deepCopy(blocks, blocks.length);
   }
 
   /**
@@ -130,9 +128,10 @@ public class Board {
   public Board twin() {
 
     // a board that is obtained by exchanging any pair of blocks
-    int p1 = (int) (1 + Math.random() * this.dimension());
-    int p2 = (int) (1 + Math.random() * this.dimension());
-    while (p2 != p1 && this.dimension() > 1) {
+    int p1 = (int) (1 + RANDOM.nextDouble() * this.dimension());
+    int p2 = (int) (1 + RANDOM.nextDouble() * this.dimension());
+    
+    while (p2 == p1 && this.dimension() > 1) {
       p2 = (int) (1 + Math.random() * this.dimension());
     }
     return swapPositions(p1, p2);
@@ -140,7 +139,7 @@ public class Board {
 
   private Board swapPositions(int p1, int p2) {
     // create a copy of the blocks
-    int[][]swapBlocks = this.blocks.clone();
+    int[][]swapBlocks = deepCopy(this.blocks, this.dimension());
 
     // swap two of the blocks
     int temp;
@@ -202,7 +201,7 @@ public class Board {
         if (getColumn(position) + 1 < this.dimension()) {
           neighbor.add(swapPositions(position, position + 1));
         }
-
+        break;
       }
     }
     return neighbor;
@@ -215,6 +214,14 @@ public class Board {
   private int getColumn(int position) {
     return (position - 1) % this.dimension();
     
+  }
+
+  private int[][] deepCopy(int[][] blocks, int dimension){
+    int[][] newBlocks = new int[dimension][];
+    for (int i = 0; i < dimension; i++) {
+      newBlocks[i] = blocks[i].clone();
+    }
+    return newBlocks;
   }
 
   /**
