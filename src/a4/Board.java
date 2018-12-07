@@ -17,6 +17,9 @@ public class Board {
   public Board(int[][] blocks) {
     // construct a board from an n-by-n array of block}
     // (where blocks[i][j] = block in row i, column j)
+    if (blocks == null) {
+      throw new IllegalArgumentException("Blocks cannot be null for a board");
+    }
     this.dimension = blocks.length;
     this.blocks = deepCopy(blocks, blocks.length);
   }
@@ -130,8 +133,11 @@ public class Board {
     // a board that is obtained by exchanging any pair of blocks
     int p1 = (int) (1 + RANDOM.nextDouble() * this.dimension());
     int p2 = (int) (1 + RANDOM.nextDouble() * this.dimension());
-    
-    while (p2 == p1 && this.dimension() > 1) {
+    while (this.blocks[getRow(p1)][getColumn(p1)] == OPEN_BLOCK && this.dimension() > 1) {
+      p1 = (int) (1 + Math.random() * this.dimension());
+    }
+    while ((this.blocks[getRow(p1)][getColumn(p1)] == OPEN_BLOCK || p2 == p1) 
+        && this.dimension() > 1) {
       p2 = (int) (1 + Math.random() * this.dimension());
     }
     return swapPositions(p1, p2);
