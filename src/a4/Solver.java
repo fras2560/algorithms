@@ -96,20 +96,11 @@ public class Solver {
         break;
       }
     }
-    if (solution != null) {
-      System.out.println("Solution Found:" + solution.getBoard());
-      System.out.println("Solution moves:" + solution.getMoves());
-    } else {
-      System.out.println("Solution Not Found:" + twinSolution);
-    }
-    
     this.solution = solution;
-
   }
 
   private SearchNode starStep(MinPQ<SearchNode> search, String title) {
     SearchNode current = search.delMin();
-    System.out.println(title + current.getBoard());
     if (current.getBoard().isGoal()) {
       return current;
     }

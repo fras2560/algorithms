@@ -47,7 +47,7 @@ public class TestSolver {
   }
 
   @Test
-  public void testSolverCase2() {
+  public void testSolverUnsolvableCase() {
     int[][] blocks = {{1, 2, 3}, {4, 5, 6}, {8, 7, 0}};
     Board board = new Board(blocks);
     Solver solver = new Solver(board);
@@ -55,4 +55,35 @@ public class TestSolver {
     assertEquals(solver.moves(), -1);
     assertEquals(solver.solution(), null);
   }
+
+  @Test
+  public void testSolverUnsolvableCase2() {
+      int[][] blocks = {{1, 0}, {2, 3}};
+      Board board = new Board(blocks);
+      Solver solver = new Solver(board);
+      assertFalse(solver.isSolvable());
+      assertEquals(solver.moves(), -1);
+      assertEquals(solver.solution(), null);
+  }
+
+  @Test
+  public void testSolverUnsolvableCase3() {
+      int[][] blocks = {{1, 2, 3}, {4, 6, 5}, {7, 8, 0}};
+      Board board = new Board(blocks);
+      Solver solver = new Solver(board);
+      assertFalse(solver.isSolvable());
+      assertEquals(solver.moves(), -1);
+      assertEquals(solver.solution(), null);
+  }
+
+  @Test
+  public void testSolverUnsolvableCase4() {
+      int[][] blocks = {{3, 2, 4, 8}, {1, 6, 0 ,12}, {5, 10, 7, 11}, {9, 13, 14, 15}};
+      Board board = new Board(blocks);
+      Solver solver = new Solver(board);
+      assertFalse(solver.isSolvable());
+      assertEquals(solver.moves(), -1);
+      assertEquals(solver.solution(), null);
+  }
+
 }

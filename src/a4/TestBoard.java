@@ -47,9 +47,17 @@ public class TestBoard {
   public void testTwin() {
     int[][] blocks = {{1}};
     Board board = new Board(blocks);
-    Board twin = board.twin();
-    assertTrue(board.equals(twin));
-    
+    Board twin;
+    try {
+      twin = board.twin();
+
+      // expect a run time exception
+      assertEquals(false, true);
+    } catch (RuntimeException exception){
+      
+    }
+
+    // run a bunch of swaps
     int tests = 0;
     while (tests < 9) {
       int[][] blocks2 = {{1, 2}, {0, 3}};

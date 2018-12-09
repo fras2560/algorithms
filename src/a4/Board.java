@@ -129,18 +129,14 @@ public class Board {
    * @return a twin board
    */
   public Board twin() {
-
-    // a board that is obtained by exchanging any pair of blocks
-    int p1 = (int) (1 + RANDOM.nextDouble() * this.dimension());
-    int p2 = (int) (1 + RANDOM.nextDouble() * this.dimension());
-    while (this.blocks[getRow(p1)][getColumn(p1)] == OPEN_BLOCK && this.dimension() > 1) {
-      p1 = (int) (1 + Math.random() * this.dimension());
+    for (int position = 1; position < this.dimension() * this.dimension(); position++) {
+      if(this.blocks[getRow(position)][getColumn(position)] != OPEN_BLOCK
+          && this.blocks[getRow(position+1)][getColumn(position+1)] != OPEN_BLOCK
+          && getRow(position) == getRow(position+1)) {
+          return swapPositions(position, position+1);
+      }
     }
-    while ((this.blocks[getRow(p1)][getColumn(p1)] == OPEN_BLOCK || p2 == p1) 
-        && this.dimension() > 1) {
-      p2 = (int) (1 + Math.random() * this.dimension());
-    }
-    return swapPositions(p1, p2);
+    throw new RuntimeException();
   }
 
   private Board swapPositions(int p1, int p2) {
@@ -211,6 +207,10 @@ public class Board {
       }
     }
     return neighbor;
+  }
+
+  private int getPosition(int row, int column) {
+    return row * this.dimension + column + 1;
   }
 
   private int getRow(int position) {
