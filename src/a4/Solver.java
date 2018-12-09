@@ -7,14 +7,14 @@ import java.util.Collections;
 import java.util.List;
 
 public class Solver {
-  private SearchNode solution;
+  private final SearchNode solution;
 
   private class SearchNode implements Comparable<SearchNode> {
-    private int manhattan;
-    private int hamming;
-    private int moves;
-    private Board board;
-    private SearchNode parent;
+    private final int manhattan;
+    private final int hamming;
+    private final int moves;
+    private final Board board;
+    private final SearchNode parent;
 
     /**
      * Constructor.
@@ -47,8 +47,11 @@ public class Solver {
     @Override
     public int compareTo(SearchNode other) {
       if (this.moves + (Math.min(this.manhattan, this.hamming))
-          <= other.moves + Math.min(other.manhattan, other.hamming)) {
+          < other.moves + Math.min(other.manhattan, other.hamming)) {
         return -1;
+      } else if(this.moves + (Math.min(this.manhattan, this.hamming))
+          == other.moves + Math.min(other.manhattan, other.hamming)) {
+        return 0;
       }
       return 1;
     }
@@ -81,25 +84,24 @@ public class Solver {
   public Solver(Board initial) {
     // find a solution to the initial board (using the A* algorithm)
     int quit = 0;
-    this.solution = null;
     MinPQ<SearchNode> queue = new MinPQ<>();
     MinPQ<SearchNode> twinQueue = new MinPQ<>();
     queue.insert(new SearchNode(initial, null, 0));
     twinQueue.insert(new SearchNode(initial.twin(), null, 0));
-    SearchNode solution = null;
+    SearchNode boardSolution = null;
     SearchNode twinSolution = null;
-    while (solution == null && twinSolution == null) {
-      solution = starStep(queue, "Normal");
-      twinSolution = starStep(twinQueue, "Twin");
+    while (boardSolution == null && twinSolution == null) {
+      boardSolution = starStep(queue);
+      twinSolution = starStep(twinQueue);
       quit++;
       if (quit > 11) {
         break;
       }
     }
-    this.solution = solution;
+    this.solution = boardSolution;
   }
 
-  private SearchNode starStep(MinPQ<SearchNode> search, String title) {
+  private SearchNode starStep(MinPQ<SearchNode> search) {
     SearchNode current = search.delMin();
     if (current.getBoard().isGoal()) {
       return current;

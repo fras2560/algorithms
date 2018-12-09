@@ -2,12 +2,10 @@ package a4;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 public class Board {
-  private final static Random RANDOM = new Random();
-  private static int OPEN_BLOCK = 0;
-  private int[][] blocks;
+  private final static int OPEN_BLOCK = 0;
+  private final int[][] blocks;
   private final int dimension;
   
   /**
@@ -130,7 +128,7 @@ public class Board {
    */
   public Board twin() {
     for (int position = 1; position < this.dimension() * this.dimension(); position++) {
-      if(this.blocks[getRow(position)][getColumn(position)] != OPEN_BLOCK
+      if (this.blocks[getRow(position)][getColumn(position)] != OPEN_BLOCK
           && this.blocks[getRow(position+1)][getColumn(position+1)] != OPEN_BLOCK
           && getRow(position) == getRow(position+1)) {
           return swapPositions(position, position+1);
@@ -158,7 +156,7 @@ public class Board {
   public boolean equals(Object y) {
 
     // does this board equal y?
-    if (y instanceof Board && ((Board) y).dimension() == this.dimension()) {
+    if (y.getClass().equals(Board.class) && ((Board) y).dimension() == this.dimension()) {
       Board other = (Board) y;
 
       // loop through all of the board
@@ -209,12 +207,8 @@ public class Board {
     return neighbor;
   }
 
-  private int getPosition(int row, int column) {
-    return row * this.dimension + column + 1;
-  }
-
   private int getRow(int position) {
-    return (int) ((position - 1) / this.dimension());
+    return ((position - 1) / this.dimension());
   }
 
   private int getColumn(int position) {
@@ -222,10 +216,10 @@ public class Board {
     
   }
 
-  private int[][] deepCopy(int[][] blocks, int dimension){
-    int[][] newBlocks = new int[dimension][];
-    for (int i = 0; i < dimension; i++) {
-      newBlocks[i] = blocks[i].clone();
+  private static int[][] deepCopy(int[][] blocksToCopy, int size) {
+    int[][] newBlocks = new int[size][];
+    for (int i = 0; i < size; i++) {
+      newBlocks[i] = blocksToCopy[i].clone();
     }
     return newBlocks;
   }
@@ -238,13 +232,16 @@ public class Board {
 
     // string representation of this board (in the output format specified below)
     // loop through all of the board
-    String representation = stringPattern(this.dimension(), '-');
+    StringBuilder builder = new StringBuilder();
+    builder.append(stringPattern(this.dimension(), '-'));
     for (int row = 0; row < this.dimension(); row++) {
-      representation = representation + "\n" + String.join(",",
-          Arrays.toString(this.blocks[row]));
+      builder.append("\n");
+      builder.append(String.join(",",
+          Arrays.toString(this.blocks[row])));
     }
-    representation = representation + "\n" + stringPattern(this.dimension(), '-');
-    return representation;
+    builder.append("\n");
+    builder.append(stringPattern(this.dimension(), '-'));
+    return builder.toString();
   }
 
   private static String stringPattern(int size, char pattern) {
