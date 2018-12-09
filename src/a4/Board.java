@@ -1,13 +1,11 @@
 package a4;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Board {
-  private final static int OPEN_BLOCK = 0;
   private final int[][] blocks;
   private final int dimension;
-  
+  private final static int OPEN_BLOCK = 0;
   /**
    * The default constructor for the board.
    * @param blocks a N by N board of blocks
@@ -155,6 +153,11 @@ public class Board {
    */
   public boolean equals(Object y) {
 
+    // if null then they are not equal
+    if(y == null) {
+      return false;
+    }
+
     // does this board equal y?
     if (y.getClass().equals(Board.class) && ((Board) y).dimension() == this.dimension()) {
       Board other = (Board) y;
@@ -233,19 +236,14 @@ public class Board {
     // string representation of this board (in the output format specified below)
     // loop through all of the board
     StringBuilder builder = new StringBuilder();
-    builder.append(stringPattern(this.dimension(), '-'));
+    builder.append(this.dimension() + "\n");
     for (int row = 0; row < this.dimension(); row++) {
+      for (int col = 0; col < this.dimension(); col++) {
+        builder.append(String.format("%2d ", this.blocks[row][col]));
+      }
       builder.append("\n");
-      builder.append(String.join(",",
-          Arrays.toString(this.blocks[row])));
     }
-    builder.append("\n");
-    builder.append(stringPattern(this.dimension(), '-'));
     return builder.toString();
-  }
-
-  private static String stringPattern(int size, char pattern) {
-    return new String(new char[size]).replace('\0', pattern);
   }
 
   public static void main(String[] args) {

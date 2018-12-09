@@ -47,6 +47,14 @@ public class TestSolver {
   }
 
   @Test
+  public void testPuzzleCase7() {
+    int[][] blocks = {{1, 2, 3}, {0, 7, 6}, {5, 4, 8}};
+    Board board = new Board(blocks);
+    Solver solver = new Solver(board);
+    assertEquals(solver.moves(), 7);
+  }
+
+  @Test
   public void testSolverUnsolvableCase() {
     int[][] blocks = {{1, 2, 3}, {4, 5, 6}, {8, 7, 0}};
     Board board = new Board(blocks);

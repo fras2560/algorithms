@@ -166,23 +166,4 @@ public class TestBoard {
     }
     
   }
-
-  @Test
-  public void testToString() {
-    int[][] blocks = {{1}};
-    Board board = new Board(blocks);
-    String expect = "-\n[1]\n-";
-    assertEquals(board.toString(), expect);
-
-    int[][] blocks2 = {{1, 2}, {0, 3}};
-    board = new Board(blocks2);
-    expect = "--\n[1, 2]\n[0, 3]\n--";
-    assertEquals(board.toString(), expect);
-
-    int[][] blocks3 = {{0, 2, 3}, {4, 5, 6}, {7, 8, 1}};
-    board = new Board(blocks3);
-    expect = "---\n[0, 2, 3]\n[4, 5, 6]\n[7, 8, 1]\n---";
-    assertEquals(board.toString(), expect);
-  }
-
 }

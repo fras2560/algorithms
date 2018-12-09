@@ -11,7 +11,6 @@ public class Solver {
 
   private class SearchNode implements Comparable<SearchNode> {
     private final int manhattan;
-    private final int hamming;
     private final int moves;
     private final Board board;
     private final SearchNode parent;
@@ -26,7 +25,6 @@ public class Solver {
       this.board = board;
       this.parent = parent;
       this.manhattan = board.manhattan();
-      this.hamming = board.hamming();
       this.moves = moves;
     }
 
@@ -46,11 +44,11 @@ public class Solver {
 
     @Override
     public int compareTo(SearchNode other) {
-      if (this.moves + (Math.min(this.manhattan, this.hamming))
-          < other.moves + Math.min(other.manhattan, other.hamming)) {
+      if (this.moves + this.manhattan
+          < other.moves + other.manhattan) {
         return -1;
-      } else if(this.moves + (Math.min(this.manhattan, this.hamming))
-          == other.moves + Math.min(other.manhattan, other.hamming)) {
+      } else if (this.moves + this.manhattan
+          == other.moves +other.manhattan) {
         return 0;
       }
       return 1;
@@ -83,7 +81,6 @@ public class Solver {
    */
   public Solver(Board initial) {
     // find a solution to the initial board (using the A* algorithm)
-    int quit = 0;
     MinPQ<SearchNode> queue = new MinPQ<>();
     MinPQ<SearchNode> twinQueue = new MinPQ<>();
     queue.insert(new SearchNode(initial, null, 0));
@@ -93,10 +90,6 @@ public class Solver {
     while (boardSolution == null && twinSolution == null) {
       boardSolution = starStep(queue);
       twinSolution = starStep(twinQueue);
-      quit++;
-      if (quit > 11) {
-        break;
-      }
     }
     this.solution = boardSolution;
   }
