@@ -1,0 +1,77 @@
+------------------------------------------------------------------------------------
+BALANCED SEARCH TREE
+------------------------------------------------------------------------------------
+2-3 tree
+    allow 1 or 2 keys per node
+        - 1 node like normal
+        - 2 nodes 3 children (X<C1, C1 > X < C2 , X > C2)
+Tree Height
+    worst case lg(N)
+    best case log_3(N)
+    c lg N (for all worst case and average case - insert, delete)
+------------------------------------------------------------------------------------
+Left Leaning Red-Black BSTs
+    - represent 2-3 trees as a BST
+    - left leaning links
+    3 - Node
+        a,b
+        <       |               >
+        less a  bettween a&b    greater than b
+    2 - RBT (internal left leaning links as glue for 3-nodes)
+                b
+        red <       >
+        a
+      X<a  a<X<b    X>b
+    RBT =
+        bst st:
+            * no node has two red links connected to it
+            * every path from root to null link has the same number of black links
+            * red links lean left
+    RBT notes
+        - search is the same
+        - rotations
+            rotate left (Node h)
+                {
+                assert isRed(h.right)
+                Node x = h.right
+                h.right = x.left;
+                x.left = h
+                x.color = h.color
+                h.color = RED
+                return x
+                }
+            rotate right (Node h)
+                {
+                assert isRed(h.left);
+                Node x = h.left
+                h.left = x.right
+                x.right = h
+                x.color = h.color
+                h.color = RED
+                return x
+                }
+            flip colors (Node h)
+                {
+                assert !isRed(h)
+                assert isRed(h.left)
+                assert isRed(h.right)
+                h.color = RED
+                h.left.color = BLACK
+                h.right.color = BLACK
+                }
+           Same code handles all cases:
+            * right child red, left child black: rotate left
+            * left child, left-left grandchild red: rotate right
+            * both childred red: flip colors
+            put (Node h, Key key, Value val){
+                if (h==null) return new Node(key, val, RED);
+                int cmp = key.compareTo(h.key)
+                if (cmp < 0) h.left = put(h.left, key, val)
+                else if (cmp >0) h.right = put(h.right, key, val)
+                else if (cmp == 0) h.val = val;;
+                if (!isRed (h.right) && !isRed(h.left)) h = rotateLeft(h)
+                if (isRed(h.left) && isRed(h.left.left)) h = rotateRight(f)
+                if (isRed(h.left) && isRed(h.right)) flipcolors(h)
+                return h
+            }
+------------------------------------------------------------------------------------
