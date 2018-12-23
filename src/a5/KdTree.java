@@ -278,7 +278,7 @@ public class KdTree {
    * @param closest the closest point so far
    * @return the nearest point, unless empty than null
    */
-  public Point2D nearestAux(Node current, Point2D point, Point2D closest) {
+  private Point2D nearestAux(Node current, Point2D point, Point2D closest) {
     if (current == null) {
       return closest;
     }
